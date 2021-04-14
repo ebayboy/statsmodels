@@ -1,11 +1,11 @@
-import sys
 import pandas as pd 
 import numpy as np 
 import matplotlib.pyplot as plt
+import sys
 
 from sklearn.metrics import mean_squared_error
 from math import sqrt
- 
+
 # 1. 抽取2012年8月至2013年12月的数据，总共14个月
 # Index 11856 marks the end of year 2013
 df = pd.read_csv("./jetrail_train.csv", nrows=11856)
@@ -48,17 +48,17 @@ print("===== test.resample('D').mean():", test)
 
 ## ===== 以下是核心算法代码
 
-# 简单平均预测
 y_hat_avg = test.copy()
-y_hat_avg['avg_forecast'] = train['Count'].mean()
+y_hat_avg['moving_avg_forecast'] = train['Count'].rolling(10).mean().iloc[-1]
 plt.figure(figsize=(16,8))
 plt.plot(train['Count'], label='Train')
 plt.plot(test['Count'], label='Test')
-plt.plot(y_hat_avg['avg_forecast'], label='Average Forecast')
+plt.plot(y_hat_avg['moving_avg_forecast'], label='Moving Average Forecast')
 plt.legend(loc='best')
 
-# 检查预测的准确率，均方根误差（RMSE）
-rmse = sqrt(mean_squared_error(test.Count, y_hat_avg.avg_forecast))
-print("RMSE:", rmse)
+## ===== 以下是检查预测的准确率，通过均方根误差（RMSE）
+rms = sqrt(mean_squared_error(test.Count, y_hat_avg.moving_avg_forecast))
+print("RMSE:", rms)
 
+# 画图
 plt.show()
