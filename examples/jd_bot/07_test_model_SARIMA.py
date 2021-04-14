@@ -52,17 +52,18 @@ print("===== test.resample('D').mean():", test)
 ## ===== 以下是核心算法代码
 
 y_hat_avg = test.copy()
-fit1 = ExponentialSmoothing(np.asarray(train['Count']) ,seasonal_periods=7 ,trend='add', seasonal='add',).fit()
-y_hat_avg['Holt_Winter'] = fit1.forecast(len(test))
+fit1 = sm.tsa.statespace.SARIMAX(train.Count, order=(2, 1, 4),seasonal_order=(0,1,1,7)).fit()
+y_hat_avg['SARIMA'] = fit1.predict(start="2013-11-1", end="2013-12-31", dynamic=True)
 plt.figure(figsize=(16,8))
 plt.plot( train['Count'], label='Train')
 plt.plot(test['Count'], label='Test')
-plt.plot(y_hat_avg['Holt_Winter'], label='Holt_Winter')
+plt.plot(y_hat_avg['SARIMA'], label='SARIMA')
 plt.legend(loc='best')
 
 ## ===== 以下是检查预测的准确率，通过均方根误差（RMSE）
-rms = sqrt(mean_squared_error(test.Count, y_hat_avg.Holt_Winter))
-# 
+rms = sqrt(mean_squared_error(test.Count, y_hat_avg.SARIMA))
+
+#RMSE: 26.04214061238206
 print("RMSE:", rms)
 
 #画图
