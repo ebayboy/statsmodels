@@ -50,11 +50,19 @@ print("===== test.resample('D').mean():", test)
 
 ## ===== 以下是核心算法代码
 
-#  calculate code
+y_hat_avg = test.copy()
+fit2 = SimpleExpSmoothing(np.asarray(train['Count'])).fit(smoothing_level=0.6,optimized=False)
+y_hat_avg['SES'] = fit2.forecast(len(test))
+plt.figure(figsize=(16,8))
+plt.plot(train['Count'], label='Train')
+plt.plot(test['Count'], label='Test')
+plt.plot(y_hat_avg['SES'], label='SES')
+plt.legend(loc='best')
 
 ## ===== 以下是检查预测的准确率，通过均方根误差（RMSE）
-rms = sqrt(mean_squared_error(test.Count, y_hat.naive))
+rms = sqrt(mean_squared_error(test.Count, y_hat_avg.SES))
 print("RMSE:", rms)
 
 #画图
 plt.show()
+
