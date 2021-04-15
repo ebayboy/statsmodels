@@ -99,11 +99,12 @@ def tsplot(y, lags=None, title='', figsize=(14, 8)):
 tsplot(sentiment_short, title='Consumer Sentiment', lags=36)
 '''
 
+print("#4.建立模型——参数选择")
 #4.建立模型——参数选择
 arima200 = ARIMA(ts_train, order=(2,0,0)).fit()#(p,d,q)
 #model_results = arima200.fit()
 
-#遍历，寻找适宜的参数
+#4.1 参数计算： 遍历，寻找适宜的参数
 p_min = 0
 d_min = 0
 q_min = 0
@@ -137,7 +138,7 @@ for p,d,q in itertools.product(range(p_min,p_max+1),range(d_min,d_max+1),range(q
 
 results_bic = results_bic[results_bic.columns].astype(float)
 
-print("results_bic:", results_bic)
+print("BIC计算获取的参数:", results_bic)
 
 #画出BIC热度图结果如下：
 fig, ax = plt.subplots(figsize=(10, 8))
@@ -153,12 +154,14 @@ ax.set_title('BIC')
 train_results = sm.tsa.arma_order_select_ic(ts_train, ic=["aic", "bic"], trend="c", max_ar=4, max_ma=4)
 aic_min_order = train_results.aic_min_order
 bic_min_order = train_results.bic_min_order
+
+print("使用AIC校验上一步获取的BIC参数：")
 print("AIC:%s BIC:%s" % (aic_min_order, bic_min_order))
 if aic_min_order != bic_min_order:
-    print("Error: BIC check failed!")
+    print("Error: 参数校验失败!")
     sys.exit()
 else:
-    print("BIC check pass!")
+    print("BIC参数校验通过!")
 
 #### 
 plt.show()
