@@ -7,11 +7,15 @@ import matplotlib.pylab as plt
 from scipy import  stats
 import matplotlib.pyplot as plt
 
+import time
+import sys
+
 #1.数据预处理
 Sentiment = pd.read_csv('arima/confidence.csv', index_col='date', parse_dates=['date'])
 #index_col=0, parse_dates=[0]
 print("head:", Sentiment.head())
 print("tail:", Sentiment.tail())
+
 
 #切分为测试数据和训练数据
 n_sample = Sentiment.shape[0]
@@ -34,7 +38,6 @@ sentiment_short['diff_2'] = sentiment_short['diff_1'].diff(1)
 sentiment_short.plot(subplots=True, figsize=(18, 12))
 
 sentiment_short= sentiment_short.diff(1)
-
 
 fig = plt.figure(figsize=(12,8))
 ax1= fig.add_subplot(111)

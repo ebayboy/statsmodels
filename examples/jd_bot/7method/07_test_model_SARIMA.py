@@ -58,7 +58,7 @@ y_hat_avg = test.copy()
 fit1 = sm.tsa.statespace.SARIMAX(train.Count, order=(2, 1, 4),seasonal_order=(0,1,1,7)).fit()   #RMSE: 26.04214061238206
 y_hat_avg['SARIMA'] = fit1.predict(start="2013-11-1", end="2013-12-31", dynamic=True)
 plt.figure(figsize=(16,8))
-plt.plot( train['Count'], label='Train')
+plt.plot(train['Count'], label='Train')
 plt.plot(test['Count'], label='Test')
 plt.plot(y_hat_avg['SARIMA'], label='SARIMA')
 plt.legend(loc='best')
