@@ -1,2 +1,4 @@
-- jettrail_train.csv 测试蜀山
-- test_model.py 模型测试程序
+- jettrail_train.csv 测试数据
+- test_model.py 模型测试程序、
+- 7methods： 七种方法
+- arima:  ARIMA算法
