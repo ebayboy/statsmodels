@@ -52,7 +52,10 @@ print("===== test.resample('D').mean():", test)
 ## ===== 以下是核心算法代码
 
 y_hat_avg = test.copy()
-fit1 = sm.tsa.statespace.SARIMAX(train.Count, order=(2, 1, 4),seasonal_order=(0,1,1,7)).fit()
+
+# fit1 = sm.tsa.statespace.SARIMAX(train.Count,).fit() #RMSE: 126.9246142603562
+# fit1 = sm.tsa.statespace.SARIMAX(train.Count, order=(2, 1, 4)).fit() #RMSE: 33.447529909194074
+fit1 = sm.tsa.statespace.SARIMAX(train.Count, order=(2, 1, 4),seasonal_order=(0,1,1,7)).fit()   #RMSE: 26.04214061238206
 y_hat_avg['SARIMA'] = fit1.predict(start="2013-11-1", end="2013-12-31", dynamic=True)
 plt.figure(figsize=(16,8))
 plt.plot( train['Count'], label='Train')
