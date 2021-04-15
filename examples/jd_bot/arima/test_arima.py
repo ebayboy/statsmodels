@@ -25,9 +25,11 @@ ts_test = Sentiment.iloc[:n_forecast]['confidence']
 
 sentiment_short = Sentiment.loc['2007':'2017']
 sentiment_short.plot(figsize = (12,8))
+'''
 plt.title("Consumer Sentiment")
 plt.legend(bbox_to_anchor = (1.25,0.5))
 sns.despine()
+'''
 
 '''
 #2.时间序列的差分d——将序列平稳化
@@ -50,6 +52,7 @@ diff2 = sentiment_short.diff(2)
 diff2.plot(ax=ax2)
 '''
 
+'''
 #3.1.分别画出ACF(自相关)和PACF（偏自相关）图像
 fig = plt.figure(figsize=(12,8))
 
@@ -63,6 +66,30 @@ fig = sm.graphics.tsa.plot_pacf(sentiment_short, lags=20, ax=ax22)
 ax22.xaxis.set_ticks_position('bottom')
 fig.tight_layout()
 
-
 plt.show()
+'''
 
+#4.2 可视化结果：四个图的整合函数，可以改参数直接调用
+#3.2.可视化结果
+def tsplot(y, lags=None, title='', figsize=(14, 8)):
+
+    fig = plt.figure(figsize=figsize)
+    layout = (2, 2)
+    ts_ax   = plt.subplot2grid(layout, (0, 0))
+    hist_ax = plt.subplot2grid(layout, (0, 1))
+    acf_ax  = plt.subplot2grid(layout, (1, 0))
+    pacf_ax = plt.subplot2grid(layout, (1, 1))
+
+    y.plot(ax=ts_ax)
+    ts_ax.set_title(title)
+    y.plot(ax=hist_ax, kind='hist', bins=25)
+    hist_ax.set_title('Histogram')
+    sm.graphics.tsa.plot_acf(y, lags=lags, ax=acf_ax)
+    sm.graphics.tsa.plot_pacf(y, lags=lags, ax=pacf_ax)
+    [ax.set_xlim(0) for ax in [acf_ax, pacf_ax]]
+    sns.despine()
+    fig.tight_layout()
+    return ts_ax, acf_ax, pacf_ax
+
+tsplot(sentiment_short, title='Consumer Sentiment', lags=36)
+plt.show()
