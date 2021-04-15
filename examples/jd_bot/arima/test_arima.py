@@ -1,11 +1,10 @@
 #美国消费者信心指数
 import pandas as pd
 import numpy as np
-import statsmodels #时间序列
+import statsmodels.api as sm
 import seaborn as sns
 import matplotlib.pylab as plt
 from scipy import  stats
-import matplotlib.pyplot as plt
 
 import time
 import sys
@@ -30,6 +29,7 @@ plt.title("Consumer Sentiment")
 plt.legend(bbox_to_anchor = (1.25,0.5))
 sns.despine()
 
+'''
 #2.时间序列的差分d——将序列平稳化
 sentiment_short['diff_1'] = sentiment_short['confidence'].diff(1)
 # 1个时间间隔，一阶差分，再一次是二阶差分
@@ -48,6 +48,21 @@ fig = plt.figure(figsize=(12,8))
 ax2= fig.add_subplot(111)
 diff2 = sentiment_short.diff(2)
 diff2.plot(ax=ax2)
+'''
+
+#3.1.分别画出ACF(自相关)和PACF（偏自相关）图像
+fig = plt.figure(figsize=(12,8))
+
+ax11 = fig.add_subplot(211)
+fig = sm.graphics.tsa.plot_acf(sentiment_short, lags=20,ax=ax11)
+ax11.xaxis.set_ticks_position('bottom')
+fig.tight_layout()
+
+ax22 = fig.add_subplot(212)
+fig = sm.graphics.tsa.plot_pacf(sentiment_short, lags=20, ax=ax22)
+ax22.xaxis.set_ticks_position('bottom')
+fig.tight_layout()
+
 
 plt.show()
 
