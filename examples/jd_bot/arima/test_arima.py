@@ -101,7 +101,7 @@ tsplot(sentiment_short, title='Consumer Sentiment', lags=36)
 
 print("#4.建立模型——参数选择")
 #4.建立模型——参数选择
-arima200 = ARIMA(ts_train, order=(2,0,0)).fit()#(p,d,q)
+model_results = ARIMA(ts_train, order=(2,0,0)).fit()#(p,d,q)
 #model_results = arima200.fit()
 
 #4.1 参数计算： 遍历，寻找适宜的参数
@@ -136,6 +136,7 @@ for p,d,q in itertools.product(range(p_min,p_max+1),range(d_min,d_max+1),range(q
     except:
         continue
 
+#BIC result
 results_bic = results_bic[results_bic.columns].astype(float)
 
 print("BIC计算获取的参数:", results_bic)
@@ -164,4 +165,27 @@ else:
     print("BIC参数校验通过!")
 
 #### 
+
+#6. 模型检验
+
+#6.1 残差检验
+
+#6.2 自相关性校验（使用D-W校验）
+dw_result = sm.stats.durbin_watson(model_results.resid.values)
+print("自相关性校验（使用D-W检验结果）:", dw_result)
+print("D-W校验结果说明: D-W 如果接近2: 即不存在（一阶）自相关性!为正确结果，残差不应该存在相关性!")
+
+#6.3 残差-正态分布校验（使用QQPlot图）
+resid = model_results.resid  #残差
+fig = plt.figure(figsize=(12,8))
+ax = fig.add_subplot(111)
+fig = qqplot(resid, line='q', ax=ax, fit=True)
+
+#6.4 残差-白噪声检验（Ljung-Box检验）
+r,q,p = sm.tsa.acf(resid.values.squeeze(), qstat=True)
+data = np.c_[range(1,41), r[1:], q, p]
+table = pd.DataFrame(data, columns=['lag', "AC", "Q", "Prob(>Q)"])
+print(table.set_index('lag'))
+
+
 plt.show()

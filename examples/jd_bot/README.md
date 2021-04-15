@@ -1,4 +1,2 @@
-- jettrail_train.csv 测试数据
-- test_model.py 模型测试程序、
-- 7methods： 七种方法
-- arima:  ARIMA算法
+
+# 离线数据分析引擎 -- 基于事件序列模型ARIMA
