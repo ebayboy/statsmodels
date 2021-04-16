@@ -167,7 +167,6 @@ else:
 #### 
 
 #6. 模型检验
-
 #6.1 残差检验
 
 #6.2 自相关性校验（使用D-W校验）
@@ -184,7 +183,8 @@ fig = qqplot(resid, line='q', ax=ax, fit=True)
 #6.4 残差-白噪声检验（Ljung-Box检验）
 r,q,p = sm.tsa.acf(resid.values.squeeze(), qstat=True)
 data = np.c_[range(1,41), r[1:], q, p]
-table = pd.DataFrame(data, columns=['lag', "AC", "Q", "Prob(>Q)"])
+# 白噪声：Prob(>Q)即P值大部分都大于0.05
+table = pd.DataFrame(data, columns=['lag', "AC", "Q", "Prob(>Q)"]) #lag-阶数
 print(table.set_index('lag'))
 
 
