@@ -19,6 +19,8 @@ Sentiment = pd.read_csv('./examples/jd_bot/arima/confidence.csv', index_col='dat
 print("head:", Sentiment.head())
 print("tail:", Sentiment.tail())
 
+sys.exit()
+
 
 #切分为测试数据和训练数据
 n_sample = Sentiment.shape[0]
@@ -186,6 +188,13 @@ data = np.c_[range(1,41), r[1:], q, p]
 # 白噪声：Prob(>Q)即P值大部分都大于0.05
 table = pd.DataFrame(data, columns=['lag', "AC", "Q", "Prob(>Q)"]) #lag-阶数
 print(table.set_index('lag'))
+
+#7.模型预测
+predict_sunspots = model_results.predict('2016-06','2018-08', dynamic=True)
+print(predict_sunspots)
+fig, ax = plt.subplots(figsize=(12, 8))
+ax = Sentiment.ix['2007':].plot(ax=ax)
+predict_sunspots.plot(ax=ax)
 
 
 plt.show()
