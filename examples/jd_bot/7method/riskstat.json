@@ -1,0 +1,46 @@
+{
+	"debug": false,
+	"numstat": 2,
+	"numout": 2,
+	"hkeysplit": "#",
+	"input": [{
+		"hkey": [
+			"vGID",
+			"vHST",
+			"vTMW"
+		],
+		"split": "|",
+		"delaysec": 5,
+        "field": "uri",
+		"cols": [
+			"total",
+			"t_disc_uri",
+			"t_disc_ua",
+			"t_4xx",
+			"t_5xx",
+			"t_hit_waf",
+            "t_disc_username",
+            "t_disc_passwd",
+            "t_weak_passwd"
+		],
+         "redis": [{
+            "addr": "127.0.0.1:6377",
+            "passwd": "",
+            "db": 5,
+            "sub": "pub_lsay",
+            "usecache": true
+        }]
+	}],
+    "stat" : [{}],
+    "output": [{
+        "split" : "_",
+        "type" : "risk",
+        "expiration" : 5, 
+		"hash": false,
+        "redis": [{
+            "addr": "127.0.0.1:6379",
+            "passwd": "",
+            "db": 2
+        }]
+    }]
+}
