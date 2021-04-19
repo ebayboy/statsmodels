@@ -158,10 +158,10 @@ ax.set_title('BIC')
 
 #模型评价准则 check train_results.aic_min_order == train_results.aic_min_order
 train_results = sm.tsa.arma_order_select_ic(ts_train, ic=["aic", "bic"], trend="c", max_ar=4, max_ma=4)
-aic_min_order = train_results.aic_min_order
+#aic_min_order = train_results.aic_min_order
 bic_min_order = train_results.bic_min_order
 
-print("AIC:%s BIC:%s" % (aic_min_order, bic_min_order))
+print("BIC:%s" % (bic_min_order))
 #AIC:(4, 3) BIC:(1, 4) -> BIC: p = 1, q = 4 -> AR1 -> MA4
 # AR -> p;  MA -> q 
 
