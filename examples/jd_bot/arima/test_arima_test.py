@@ -21,7 +21,7 @@ print("tail:", Sentiment.tail())
 
 #切分为测试数据和训练数据
 n_sample = Sentiment.shape[0] #2007 - 2017 = 12*13 = 132
-n_train = 120 # 2007 - 2016 = 12*12 = 120
+n_train = 120 # 2007 - 2016 = 12*12 = 120  
 n_forecast = n_sample - n_train # 12
 print("n_sample:%d n_train:%d n_forecast:%d" %(n_sample, n_train, n_forecast))
 
@@ -37,47 +37,9 @@ sentiment_short.plot(figsize = (12,8))
 plt.title("Consumer Sentiment")
 plt.legend(bbox_to_anchor = (1.25,0.5))
 sns.despine()
-sentiment_short= sentiment_short.diff(1)
 
-
-'''
 #2.时间序列的差分d——将序列平稳化
-sentiment_short['diff_1'] = sentiment_short['confidence'].diff(1)
-# 1个时间间隔，一阶差分，再一次是二阶差分
-sentiment_short['diff_2'] = sentiment_short['diff_1'].diff(1)
-sentiment_short.plot(subplots=True, figsize=(18, 12))
-
-
-#使用一阶差分平稳化后的序列
 sentiment_short= sentiment_short.diff(1)
-#这里删除回原数据来展示，不然下一步会报错 ValueError: x is required to have ndim 1 but has ndim 2
-del sentiment_short['diff_2']
-del sentiment_short['diff_1']
-
-fig = plt.figure(figsize=(12,8))
-ax1= fig.add_subplot(111)
-diff1 = sentiment_short.diff(1)
-diff1.plot(ax=ax1)
-
-fig = plt.figure(figsize=(12,8))
-ax2= fig.add_subplot(111)
-diff2 = sentiment_short.diff(2)
-diff2.plot(ax=ax2)
-
-#3.1.分别画出ACF(自相关)和PACF（偏自相关）图像
-fig = plt.figure(figsize=(12,8))
-
-ax11 = fig.add_subplot(211)
-fig = sm.graphics.tsa.plot_acf(sentiment_short, lags=20,ax=ax11)
-ax11.xaxis.set_ticks_position('bottom')
-fig.tight_layout()
-
-ax22 = fig.add_subplot(212)
-fig = sm.graphics.tsa.plot_pacf(sentiment_short, lags=20, ax=ax22)
-ax22.xaxis.set_ticks_position('bottom')
-fig.tight_layout()
-'''
-
 
 #4.2 可视化结果：四个图的整合函数，可以改参数直接调用
 #3.2.可视化结果
@@ -102,6 +64,9 @@ def tsplot(y, lags=None, title='', figsize=(14, 8)):
     return ts_ax, acf_ax, pacf_ax
 
 tsplot(sentiment_short, title='Consumer Sentiment', lags=36)
+
+# order (p,d,q)
+#model_results = ARIMA(ts_train, order=(1,0,4)).fit()#(p,d,q)
 
 print("#4.建立模型——参数选择")
 #4.建立模型——参数选择
@@ -162,7 +127,7 @@ aic_min_order = train_results.aic_min_order
 bic_min_order = train_results.bic_min_order
 
 print("AIC:%s BIC:%s" % (aic_min_order, bic_min_order))
-#AIC:(4, 3) BIC:(1, 4) -> BIC: p = 1, q = 4 -> AR1 -> MA4
+# AIC:(4, 3) BIC:(1, 4) -> BIC: p = 1, q = 4 -> AR1 -> MA4
 # AR -> p;  MA -> q 
 
 #### 
@@ -194,7 +159,8 @@ print(table.set_index('lag'))
 #7.模型预测
 predict_sunspots = model_results.predict('2017-01','2017-12', dynamic=True)
 fig, ax = plt.subplots(figsize=(12, 8))
-ax = Sentiment.iloc[0:]['confidence'].plot(ax=ax)
+ax = Sentiment.ix['2007':].plot(ax=ax)
 predict_sunspots.plot(ax=ax)
+
 
 plt.show()

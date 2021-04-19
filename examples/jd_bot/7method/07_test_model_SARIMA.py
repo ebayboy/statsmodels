@@ -11,7 +11,7 @@ import statsmodels.api as sm
  
 # 1. 抽取2012年8月至2013年12月的数据，总共14个月
 # Index 11856 marks the end of year 2013
-df = pd.read_csv("./jetrail_train.csv", nrows=11856)
+df = pd.read_csv("./examples/jd_bot/7method/jetrail_train.csv", nrows=11856)
 
 print("===== df.head():\n", df.head())
 print("===== df.tail():\n", df.tail())
