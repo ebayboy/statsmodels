@@ -103,6 +103,7 @@ def tsplot(y, lags=None, title='', figsize=(14, 8)):
 
 tsplot(sentiment_short, title='Consumer Sentiment', lags=36)
 
+
 print("#4.建立模型——参数选择")
 #4.建立模型——参数选择
 model_results = ARIMA(ts_train, order=(2,0,0)).fit()#(p,d,q)
@@ -156,12 +157,15 @@ ax = sns.heatmap(results_bic,
                  )
 ax.set_title('BIC')
 
-#模型评价准则 check train_results.aic_min_order == train_results.aic_min_order
+#模型评价准则
 train_results = sm.tsa.arma_order_select_ic(ts_train, ic=["aic", "bic"], trend="c", max_ar=4, max_ma=4)
 #aic_min_order = train_results.aic_min_order
 bic_min_order = train_results.bic_min_order
 
-print("BIC:%s" % (bic_min_order))
+print("BIC:", bic_min_order)
+#BIC:(p,q) 
+#BIC: (1, 4)
+
 #AIC:(4, 3) BIC:(1, 4) -> BIC: p = 1, q = 4 -> AR1 -> MA4
 # AR -> p;  MA -> q 
 
