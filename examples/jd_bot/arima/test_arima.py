@@ -34,10 +34,6 @@ print("ts_test.head():", ts_test.head())
 print("ts_test.tail():", ts_test.tail())
 
 sentiment_short = Sentiment.loc['2007':'2017']
-sentiment_short.plot(figsize = (12,8))
-plt.title("Consumer Sentiment")
-plt.legend(bbox_to_anchor = (1.25,0.5))
-sns.despine()
 sentiment_short= sentiment_short.diff(1)
 
 print("#4.建立模型——参数选择")
@@ -45,7 +41,7 @@ print("#4.建立模型——参数选择")
 #order(p,d,q) 
 #BIC(p,q):(1, 4)
 #model_results = ARIMA(ts_train, order=(2,0,0)).fit()#(p,d,q)
-model_results = ARIMA(ts_train, order=(2,0,0)).fit()#(p,d,q)
+model_results = ARIMA(ts_train, order=(1,0,4)).fit()
 
 #7.模型预测
 predict_sunspots = model_results.predict('2017-01','2017-12', dynamic=True)
