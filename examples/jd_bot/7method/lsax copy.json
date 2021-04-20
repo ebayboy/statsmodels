@@ -1,0 +1,574 @@
+{
+    "debug":false,
+    "numcpu":3,
+    "numStatX":2,
+    "distr":[
+        "instance_id",
+        "host"
+    ],
+    "input":{
+        "type":"split",
+        "cols":[
+            "time_local_nginx_log",
+            "hostname",
+            "pid",
+            "msec",
+            "remote_addr",
+            "remote_port",
+            "document_uri",
+            "status",
+            "bytes_sent",
+            "request_length",
+            "ssl_protocol",
+            "ssl_session_reused",
+            "C_IDC",
+            "tcpinfo_rtt",
+            "host",
+            "server_addr",
+            "server_port",
+            "upstream_http_name",
+            "upstream_addr",
+            "upstream_http_port",
+            "upstream_connect_time",
+            "upstream_header_time",
+            "upstream_response_time",
+            "request_time",
+            "connections_active",
+            "connections_reading",
+            "connection_requests",
+            "connections_writing",
+            "server_name",
+            "http_user_agent",
+            "anti_reason",
+            "anti_action",
+            "request_id",
+            "request_method",
+            "http_referer",
+            "scheme",
+            "uri",
+            "instance_id",
+            "host@$instance_id",
+            "server_protocol",
+            "sent_http_content_range",
+            "content_type",
+            "content_length",
+            "body_bytes_sent",
+            "upstream_bytes_received",
+            "upstream_status",
+            "request_uri",
+            "anti_remote_addr",
+            "anti_status",
+            "anti_payload",
+            "user_pin",
+            "upstream_cache_status",
+            "anti_typ",
+            "upstream_err",
+            "anti_req_raw",
+            "anti_resp_raw",
+            "anti_geo",
+            "anti_risk_fid",
+            "anti_risk_raw"
+        ],
+        "split":"#?#  :"
+    },
+    "window":60,
+    "timestamp":"msec",
+    "stats":[
+        {
+            "groupby":[
+                "instance_id",
+                "host",
+                "remote_addr",
+                "STR(uri, PAD.uri)",
+                "STR(msec, MINU)"
+            ],
+            "select":[
+                "instance_id",
+                "host",
+                "remote_addr",
+                "STR(uri, PAD.uri)",
+                "STR(msec, MINU)",
+                "COUNT(status, ANY) AS total",
+                "COUNT(status, S4xx) AS t_4xx",
+                "COUNT(status, S5xx) AS t_5xx",
+                "COUNT(uri, DISC) AS t_disc_uri",
+                "COUNT(http_user_agent, DISC) AS t_disc_ua",
+                "COUNT(anti_typ, EQ.ceng) AS t_hit_waf",
+                "COUNT(anti_risk_raw, BASE64|JSON.event.username|DISC) AS t_disc_username",
+                "COUNT(anti_risk_raw, BASE64|JSON.event.passwd|DISC) AS t_disc_passwd",
+                "COUNT(anti_risk_raw, BASE64|JSON.event.passwd|WPWD) AS t_weak_passwd"
+            ],
+            "from":"input"
+        },
+        {
+            "groupby":[
+                "instance_id",
+                "host",
+                "STR(anti_risk_fid, PREADD.fid)",
+                "STR(uri, PAD.uri)",
+                "STR(msec, MINU)"
+            ],
+            "select":[
+                "instance_id",
+                "host",
+                "STR(anti_risk_fid, PREADD.fid)",
+                "STR(uri, PAD.uri)",
+                "STR(msec, MINU)",
+                "COUNT(status, ANY) AS total",
+                "COUNT(status, S4xx) AS t_4xx",
+                "COUNT(status, S5xx) AS t_5xx",
+                "COUNT(uri, DISC) AS t_disc_uri",
+                "COUNT(http_user_agent, DISC) AS t_disc_ua",
+                "COUNT(anti_typ, EQ.ceng) AS t_hit_waf",
+                "COUNT(anti_risk_raw, BASE64|JSON.event.username|DISC) AS t_disc_username",
+                "COUNT(anti_risk_raw, BASE64|JSON.event.passwd|DISC) AS t_disc_passwd",
+                "COUNT(anti_risk_raw, BASE64|JSON.event.passwd|WPWD) AS t_weak_passwd"
+            ],
+            "from":"input",
+            "where": [
+                "anti_risk_fid NOTIN (0,,-)"
+            ]
+        },
+        {
+            "groupby":[
+                "instance_id",
+                "host",
+                "STR(remote_addr, PAD.all)",
+                "STR(uri, PAD.uri)",
+                "STR(msec, MINU)"
+            ],
+            "select":[
+                "instance_id",
+                "host",
+                "STR(remote_addr, PAD.all)",
+                "STR(uri, PAD.uri)",
+                "STR(msec, MINU)",
+                "COUNT(status, ANY) AS total",
+                "COUNT(status, S4xx) AS t_4xx",
+                "COUNT(status, S5xx) AS t_5xx",
+                "COUNT(uri, DISC) AS t_disc_uri",
+                "COUNT(http_user_agent, DISC) AS t_disc_ua",
+                "COUNT(anti_typ, EQ.ceng) AS t_hit_waf",
+                "COUNT(anti_risk_raw, BASE64|JSON.event.username|DISC) AS t_disc_username",
+                "COUNT(anti_risk_raw, BASE64|JSON.event.passwd|DISC) AS t_disc_passwd",
+                "COUNT(anti_risk_raw, BASE64|JSON.event.passwd|WPWD) AS t_weak_passwd"
+            ],
+            "from":"input"
+        },
+        {
+            "groupby":[
+                "instance_id",
+                "host",
+                "remote_addr",
+                "uri",
+                "STR(msec, MINU)"
+            ],
+            "select":[
+                "instance_id",
+                "host",
+                "remote_addr",
+                "uri",
+                "STR(msec, MINU)",
+                "COUNT(status, ANY) AS total",
+                "COUNT(status, S4xx) AS t_4xx",
+                "COUNT(status, S5xx) AS t_5xx",
+                "COUNT(uri, DISC) AS t_disc_uri",
+                "COUNT(http_user_agent, DISC) AS t_disc_ua",
+                "COUNT(anti_typ, EQ.ceng) AS t_hit_waf",
+                "COUNT(anti_risk_raw, BASE64|JSON.event.username|DISC) AS t_disc_username",
+                "COUNT(anti_risk_raw, BASE64|JSON.event.passwd|DISC) AS t_disc_passwd",
+                "COUNT(anti_risk_raw, BASE64|JSON.event.passwd|WPWD) AS t_weak_passwd"
+            ],
+            "from":"input",
+            "where": [
+                "anti_risk_raw NOTIN (0,,-)"
+            ]
+        }
+    ],
+    "outputs":[
+        {
+            "format":{
+                "cols":[
+                    "instance_id",
+                    "host",
+                    "remote_addr",
+                    "uri",
+                    "msec",
+                    "total",
+                    "t_4xx",
+                    "t_5xx",
+                    "t_disc_uri",
+                    "t_disc_ua",
+                    "t_hit_waf",
+                    "t_disc_username",
+                    "t_disc_passwd",
+                    "t_weak_passwd"
+                ],
+                "split":"|"
+            },
+            "hash":true,
+            "redis":[
+                {
+                    "addr":"{{ SKYWING_IP_S1 }}:6279",
+                    "passwd": "jcloud6279",
+                    "DB":4,
+                    "hash":true,
+                    "list":[
+                        "list_lsax_00"
+                    ]
+                },
+                {
+                    "addr":"{{ SKYWING_IP_S2 }}:6279",
+                    "passwd": "jcloud6279",
+                    "DB":4,
+                    "hash":true,
+                    "list":[
+                        "list_lsax_00"
+                    ]
+                },
+                {
+                    "addr":"{{ SKYWING_IP_S3 }}:6279",
+                    "passwd": "jcloud6279",
+                    "DB":4,
+                    "hash":true,
+                    "list":[
+                        "list_lsax_00"
+                    ]
+                },
+                {
+                    "addr":"{{ SKYWING_IP_S4 }}:6279",
+                    "passwd": "jcloud6279",
+                    "DB":4,
+                    "hash":true,
+                    "list":[
+                        "list_lsax_00"
+                    ]
+                },
+                {
+                    "addr":"{{ SKYWING_IP_S5 }}:6279",
+                    "passwd": "jcloud6279",
+                    "DB":4,
+                    "hash":true,
+                    "list":[
+                        "list_lsax_00"
+                    ]
+                },
+                {
+                    "addr":"{{ SKYWING_IP_S6 }}:6279",
+                    "passwd": "jcloud6279",
+                    "DB":4,
+                    "hash":true,
+                    "list":[
+                        "list_lsax_00"
+                    ]
+                },
+                {
+                    "addr":"{{ SKYWING_IP_S7 }}:6279",
+                    "passwd": "jcloud6279",
+                    "DB":4,
+                    "hash":true,
+                    "list":[
+                        "list_lsax_00"
+                    ]
+                },
+                {
+                    "addr":"{{ SKYWING_IP_S8 }}:6279",
+                    "passwd": "jcloud6279",
+                    "DB":4,
+                    "hash":true,
+                    "list":[
+                        "list_lsax_00"
+                    ]
+                }
+            ]
+        },
+        {
+            "format":{
+                "cols":[
+                    "instance_id",
+                    "host",
+                    "anti_risk_fid",
+                    "uri",
+                    "msec",
+                    "total",
+                    "t_4xx",
+                    "t_5xx",
+                    "t_disc_uri",
+                    "t_disc_ua",
+                    "t_hit_waf",
+                    "t_disc_username",
+                    "t_disc_passwd",
+                    "t_weak_passwd"
+                ],
+                "split":"|"
+            },
+            "hash":true,
+            "redis":[
+                {
+                    "addr":"{{ SKYWING_IP_S1 }}:6279",
+                    "passwd": "jcloud6279",
+                    "DB":4,
+                    "hash":true,
+                    "list":[
+                        "list_lsax_00"
+                    ]
+                },
+                {
+                    "addr":"{{ SKYWING_IP_S2 }}:6279",
+                    "passwd": "jcloud6279",
+                    "DB":4,
+                    "hash":true,
+                    "list":[
+                        "list_lsax_00"
+                    ]
+                },
+                {
+                    "addr":"{{ SKYWING_IP_S3 }}:6279",
+                    "passwd": "jcloud6279",
+                    "DB":4,
+                    "hash":true,
+                    "list":[
+                        "list_lsax_00"
+                    ]
+                },
+                {
+                    "addr":"{{ SKYWING_IP_S4 }}:6279",
+                    "passwd": "jcloud6279",
+                    "DB":4,
+                    "hash":true,
+                    "list":[
+                        "list_lsax_00"
+                    ]
+                },
+                {
+                    "addr":"{{ SKYWING_IP_S5 }}:6279",
+                    "passwd": "jcloud6279",
+                    "DB":4,
+                    "hash":true,
+                    "list":[
+                        "list_lsax_00"
+                    ]
+                },
+                {
+                    "addr":"{{ SKYWING_IP_S6 }}:6279",
+                    "passwd": "jcloud6279",
+                    "DB":4,
+                    "hash":true,
+                    "list":[
+                        "list_lsax_00"
+                    ]
+                },
+                {
+                    "addr":"{{ SKYWING_IP_S7 }}:6279",
+                    "passwd": "jcloud6279",
+                    "DB":4,
+                    "hash":true,
+                    "list":[
+                        "list_lsax_00"
+                    ]
+                },
+                {
+                    "addr":"{{ SKYWING_IP_S8 }}:6279",
+                    "passwd": "jcloud6279",
+                    "DB":4,
+                    "hash":true,
+                    "list":[
+                        "list_lsax_00"
+                    ]
+                }
+            ]
+        },
+        {
+            "format":{
+                "cols":[
+                    "instance_id",
+                    "host",
+                    "remote_addr",
+                    "uri",
+                    "msec",
+                    "total",
+                    "t_4xx",
+                    "t_5xx",
+                    "t_disc_uri",
+                    "t_disc_ua",
+                    "t_hit_waf",
+                    "t_disc_username",
+                    "t_disc_passwd",
+                    "t_weak_passwd"
+                ],
+                "split":"|"
+            },
+            "hash":true,
+            "redis":[
+                {
+                    "addr":"{{ SKYWING_IP_S1 }}:6279",
+                    "passwd": "jcloud6279",
+                    "DB":4,
+                    "hash":true,
+                    "list":[
+                        "list_lsax_00"
+                    ]
+                },
+                {
+                    "addr":"{{ SKYWING_IP_S2 }}:6279",
+                    "passwd": "jcloud6279",
+                    "DB":4,
+                    "hash":true,
+                    "list":[
+                        "list_lsax_00"
+                    ]
+                },
+                {
+                    "addr":"{{ SKYWING_IP_S3 }}:6279",
+                    "passwd": "jcloud6279",
+                    "DB":4,
+                    "hash":true,
+                    "list":[
+                        "list_lsax_00"
+                    ]
+                },
+                {
+                    "addr":"{{ SKYWING_IP_S4 }}:6279",
+                    "passwd": "jcloud6279",
+                    "DB":4,
+                    "hash":true,
+                    "list":[
+                        "list_lsax_00"
+                    ]
+                },
+                {
+                    "addr":"{{ SKYWING_IP_S5 }}:6279",
+                    "passwd": "jcloud6279",
+                    "DB":4,
+                    "hash":true,
+                    "list":[
+                        "list_lsax_00"
+                    ]
+                },
+                {
+                    "addr":"{{ SKYWING_IP_S6 }}:6279",
+                    "passwd": "jcloud6279",
+                    "DB":4,
+                    "hash":true,
+                    "list":[
+                        "list_lsax_00"
+                    ]
+                },
+                {
+                    "addr":"{{ SKYWING_IP_S7 }}:6279",
+                    "passwd": "jcloud6279",
+                    "DB":4,
+                    "hash":true,
+                    "list":[
+                        "list_lsax_00"
+                    ]
+                },
+                {
+                    "addr":"{{ SKYWING_IP_S8 }}:6279",
+                    "passwd": "jcloud6279",
+                    "DB":4,
+                    "hash":true,
+                    "list":[
+                        "list_lsax_00"
+                    ]
+                }
+            ]
+        },
+        {
+            "format":{
+                "cols":[
+                    "instance_id",
+                    "host",
+                    "remote_addr",
+                    "uri",
+                    "msec",
+                    "total",
+                    "t_4xx",
+                    "t_5xx",
+                    "t_disc_uri",
+                    "t_disc_ua",
+                    "t_hit_waf",
+                    "t_disc_username",
+                    "t_disc_passwd",
+                    "t_weak_passwd"
+                ],
+                "split":"|"
+            },
+            "hash":true,
+            "redis":[
+                {
+                    "addr":"{{ SKYWING_IP_S1 }}:6279",
+                    "passwd": "jcloud6279",
+                    "DB":4,
+                    "hash":true,
+                    "list":[
+                        "list_lsax_00"
+                    ]
+                },
+                {
+                    "addr":"{{ SKYWING_IP_S2 }}:6279",
+                    "passwd": "jcloud6279",
+                    "DB":4,
+                    "hash":true,
+                    "list":[
+                        "list_lsax_00"
+                    ]
+                },
+                {
+                    "addr":"{{ SKYWING_IP_S3 }}:6279",
+                    "passwd": "jcloud6279",
+                    "DB":4,
+                    "hash":true,
+                    "list":[
+                        "list_lsax_00"
+                    ]
+                },
+                {
+                    "addr":"{{ SKYWING_IP_S4 }}:6279",
+                    "passwd": "jcloud6279",
+                    "DB":4,
+                    "hash":true,
+                    "list":[
+                        "list_lsax_00"
+                    ]
+                },
+                {
+                    "addr":"{{ SKYWING_IP_S5 }}:6279",
+                    "passwd": "jcloud6279",
+                    "DB":4,
+                    "hash":true,
+                    "list":[
+                        "list_lsax_00"
+                    ]
+                },
+                {
+                    "addr":"{{ SKYWING_IP_S6 }}:6279",
+                    "passwd": "jcloud6279",
+                    "DB":4,
+                    "hash":true,
+                    "list":[
+                        "list_lsax_00"
+                    ]
+                },
+                {
+                    "addr":"{{ SKYWING_IP_S7 }}:6279",
+                    "passwd": "jcloud6279",
+                    "DB":4,
+                    "hash":true,
+                    "list":[
+                        "list_lsax_00"
+                    ]
+                },
+                {
+                    "addr":"{{ SKYWING_IP_S8 }}:6279",
+                    "passwd": "jcloud6279",
+                    "DB":4,
+                    "hash":true,
+                    "list":[
+                        "list_lsax_00"
+                    ]
+                }
+            ]
+        }
+    ]
+}
