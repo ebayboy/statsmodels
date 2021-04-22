@@ -15,7 +15,7 @@ import sys
 #不训练模型
 
 #1.数据预处理
-Sentiment = pd.read_csv('./examples/jd_bot/waf/confidence.csv', index_col='date', parse_dates=['date'])
+Sentiment = pd.read_csv('./confidence.csv', index_col='date', parse_dates=['date'])
 #index_col=0, parse_dates=[0]
 print("head:", Sentiment.head())
 print("tail:", Sentiment.tail())
@@ -50,3 +50,5 @@ ax = Sentiment.iloc[0:]['confidence'].plot(ax=ax)
 predict_sunspots.plot(ax=ax)
 
 plt.show()
+plt.savefig('1.png')
+
